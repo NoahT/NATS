@@ -4,7 +4,7 @@ Poject: NATS
 Version: 0.1
 
 Algorythm:
-  1) Grab the bind_ip & desired port
+  1) Grab the ip & desired port
   2) Create socket object
   3) Bind ip/port
   4) run the server
@@ -19,13 +19,12 @@ import socket
 import threading 
 
 
-def setup():
+def setup(ip=socket.gethostbyname(socket.gethostname()),
+          port = 3000):
   '''Sets up the server on the localhost with the port 3000'''
-  bind_ip = socket.gethostbyname(socket.gethostname())
-  bind_port = 3000
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  server.bind((bind_ip, bind_port))
-  print "[*] Listening on %s:%d" % (bind_ip, bind_port)
+  server.bind((ip, port))
+  print "[*] Listening on %s:%d" % (ip, port)
   return server
 
 
