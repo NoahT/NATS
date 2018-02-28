@@ -37,11 +37,11 @@ def setup(ip=socket.gethostbyname(socket.gethostname()),
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
   server.bind((ip, port))
-  print( "[*] Listening on %s:%d" % (ip, port))
+  print( "[*][*] Listening on %s:%d [*][*]" % (ip, port))
   return server
 
 
-def run(server):
+def run(server, restarts=0):
   '''
   Opens the server. Accepts the server connection. 
   Threads the client handler
@@ -49,28 +49,33 @@ def run(server):
   '''
   while True:
     try:
-      print("[*] Waiting for connection....")
+      print("[*] Waiting for connection....", end='', flush=True)
       client, addr = server.accept()
       print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
       #spin up our client thread to handle incoming data
-      client_handler = threading.Thread(target=handle_client,args=(client,))
+      client_handler = threading.Thread(target=handle_client,
+                                        args=(client, server_restarts))
       client_handler.start()
     except Exception as e:
       log(e)
-      run(server)
+      restarts = server_restarts(restarts)
+      run(server, restarts)
 
 
-def log(exception):
+def log(exception, 
+  location="ServerMain_CrashLog.txt"):
   '''
   Logs the passed exception to a file
   '''
-  with open("/Users/taylorcochran/Documents/crash_log.txt", "ab+") as file:
-        file.write(to_bytes("\n============================\n"))
-        file.write(to_bytes(str(type(e)) + "\n"))
-        file.write(to_bytes(str(e.args) + "\n"))
-        file.write(to_bytes(str(e) + "\n"))
-        file.write(to_bytes("============================"))
-      print("[*] Exception %s logged." % str(type(e)))
+  location = "/Users/taylorcochran/Desktop/Server Data/Logs/" + location
+  with open(location,
+            "ab+") as file:
+    file.write(to_bytes("\n============================\n"))
+    file.write(to_bytes(str(type(exception)) + "\n"))
+    file.write(to_bytes(str(exception.args) + "\n"))
+    file.write(to_bytes(str(exception) + "\n"))
+    file.write(to_bytes("============================"))
+  print("[*] Exception %s logged." % str(type(exception)))
 
 
 
@@ -79,29 +84,32 @@ def log(exception):
 ####     CLIENT       ####
 ##########################
 '''
-def handle_client(client_socket):
+def handle_client(client_socket, restarts):
   '''
   Recives the client request, processes the passed data, and replies.
   Finally it closes the client_socket
   '''
-  request = to_str(client_socket.recv(1024))
-  message = None
-  command = ["python2",]
-
-  # @@@@@@@ REPLACE WITH ACTUAL COMMANDS
-  if (request == "I hope this works!"):
-    client_socket.send(to_bytes("It does!"))
-  elif (request == "Hello Server!"):
-    command.append("HelloWorld.py")
-    print("[*] Executing the following command: %s %s" % (command[0], command[1]))
-    # message = to_bytes(database(command))
-    message = to_bytes("Lol wut")
-    client_socket.send(message)
-  else:
-    client_socket.send(to_bytes("Idk what you're talking about!"))
-  print("[*] Received: %s" % request)
-  client_socket.close()
-  run(server)
+  try:
+    request = to_str(client_socket.recv(1024))
+    message = None
+    command = ["python2",]
+    # @@@@@@@ REPLACE WITH ACTUAL COMMANDS
+    if (request == "I hope this works!"):
+      client_socket.send(to_bytes("It does!"))
+    elif (request == "Hello Server!"):
+      command.append("HelloWorld.py")
+      print("[*] Executing the following command: %s %s" % (command[0], command[1]))
+      # message = to_bytes(database(command))
+      message = to_bytes("Lol wut")
+      client_socket.send(message)
+    else:
+      client_socket.send(to_bytes("Idk what you're talking about!"))
+    print("[*] Received: %s" % request)
+    client_socket.close()
+  except Exception as e:
+    log(e)
+    restarts = server_restarts(restarts)
+  run(server, server_restarts)
 
 
 
@@ -139,6 +147,13 @@ def database(command):
   result = subprocess.check_output(command)
   return result
 
+
+def server_restarts(restarts=0):
+  restarts += 1
+  print("[*] Server has restarted %d times" % restarts) 
+  if restarts >= 10:
+    sys.exit()
+  return restarts
 
 
 '''
