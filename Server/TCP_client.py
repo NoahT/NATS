@@ -12,6 +12,7 @@ Algorythm:
 '''
 import socket
 
+
 def setup(host=socket.gethostbyname(socket.gethostname()),
           port=10135):
   '''Creates the client/socket object'''
@@ -19,9 +20,11 @@ def setup(host=socket.gethostbyname(socket.gethostname()),
   client.connect((host, port))
   return client
 
+
 def send(client, message="This is a test message"):
   '''Sends the passed message to the client'''
-  client.send(message)
+  client.send(to_bytes(message))
+
 
 def recieve(client):
   '''Receives the data from the server'''
@@ -29,9 +32,31 @@ def recieve(client):
   return response
 
 
+def to_str(bytes_or_str):
+  '''
+  Accepts a 8-bit or string and returns a string
+  '''
+  if isinstance(bytes_or_str, bytes):
+    value = bytes_or_str.decode('utf-8')
+  else:
+    value = bytes_or_str
+  return value
+
+
+def to_bytes(bytes_or_str):
+  '''
+  Accepts a 8-bit or string and returns an 8-bit
+  '''
+  if isinstance(bytes_or_str, str):
+    value = bytes_or_str.encode('utf-8')
+  else:
+    value = bytes_or_str
+  return value
+
+
 if __name__ == '__main__':
   client = setup()
-  send(client, "Hello Server!")
-  response = recieve(client)
-  print response
+  send(client, to_bytes("Hello Server!"))
+  response = to_str(recieve(client))
+  print(response)
 
