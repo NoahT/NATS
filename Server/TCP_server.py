@@ -73,14 +73,14 @@ def run(server):
       #spin up our client thread to handle incoming data
       client_handler = threading.Thread(target=handle_client,args=(client,))
       client_handler.start()
-      # print( 1/0)
+      print( 1/0)
     except Exception as e:
-      with open("/Users/taylorcochran/Documents/crash_log.txt", "a") as file:
-        file.write("\n============================\n")
-        file.write(str(type(e)) + "\n")
-        file.write(str(e.args) + "\n")
-        file.write(str(e) + "\n")
-        file.write("============================")
+      with open("/Users/taylorcochran/Documents/crash_log.txt", "ab") as file:
+        file.write(to_bytes("\n============================\n"))
+        file.write(to_bytes(str(type(e)) + "\n"))
+        file.write(to_bytes(str(e.args) + "\n"))
+        file.write(to_bytes(str(e) + "\n"))
+        file.write(to_bytes("============================"))
       print( "[*] Exception %s logged." % str(type(e)))
       print( "[*] Attemping to recover...")
       break
