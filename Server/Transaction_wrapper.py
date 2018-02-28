@@ -24,10 +24,10 @@ def run(request):
   '''
   Runs the transaction request.
   '''
-  time_stamp = datetime
+  time_stamp = datetime.datetime.now()
   log(time_stamp)
   transaction_message = transaction(request)
-  log(transaction_message, 1)
+  # log(transaction_message, 1)
   return transaction_message
 
 
@@ -45,11 +45,10 @@ def log(message, stage=0):
     with open(location, "ab+") as file:
       message = to_bytes(message)
       file.write(to_bytes("\n============================\n"))
-      file.write(to_bytes(("Date time %s" % message)))
+      file.write(to_bytes(("Date time %s\n" % message)))
   elif stage == 1:
     location += "Transaction_Log.txt"
     with open(location, "ab+") as file:
-      message = to_bytes(message)
       file.write(to_bytes("TRANSACTION: %s" % message))
       file.write(to_bytes("\n============================\n"))
   elif stage == 2:
@@ -59,7 +58,7 @@ def log(message, stage=0):
       file.write(to_bytes(str(type(message)) + "\n"))
       file.write(to_bytes(str(message.args) + "\n"))
       file.write(to_bytes(str(message) + "\n"))
-      file.write(to_bytes("============================"))
+      file.write(to_bytes("\n============================\n"))
   else:
     print("You should never see this message!")
     sys.exit()
@@ -78,6 +77,7 @@ def transaction(request):
   data = ""
   try:
     if request == "get people":
+      log(request, 1)
       file += "simpleDB.pl"
       command.append(file)
       subprocess.run(command)
