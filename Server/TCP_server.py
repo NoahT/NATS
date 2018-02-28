@@ -152,6 +152,8 @@ def server_restarts(restarts=0):
   restarts += 1
   print("[*] Server has restarted %d times" % restarts) 
   if restarts >= 10:
+    print("[*][*] Server has reached restart limit! [*][*]")
+    print("[*][*] Exiting....[*][*]")
     sys.exit()
   return restarts
 
