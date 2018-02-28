@@ -1,7 +1,7 @@
 '''
 Author: Taylor Cochran
 Poject: NATS
-Version: 0.2
+Version: 0.4
 
 Algorythm:
   1) Grab the ip & desired port
@@ -20,6 +20,7 @@ import socket
 import subprocess
 import sys
 import threading 
+import Transaction_wrapper
 
 
 
@@ -49,7 +50,7 @@ def run(server, restarts=0):
   '''
   while True:
     try:
-      print("[*] Waiting for connection....", end='', flush=True)
+      print("[*] Waiting for connection....", flush=True)
       client, addr = server.accept()
       print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
       #spin up our client thread to handle incoming data
@@ -96,11 +97,8 @@ def handle_client(client_socket, restarts):
     # @@@@@@@ REPLACE WITH ACTUAL COMMANDS
     if (request == "I hope this works!"):
       client_socket.send(to_bytes("It does!"))
-    elif (request == "Hello Server!"):
-      command.append("HelloWorld.py")
-      print("[*] Executing the following command: %s %s" % (command[0], command[1]))
-      # message = to_bytes(database(command))
-      message = to_bytes("Lol wut")
+    elif (is_valid_request(request)):
+      message = to_bytes(transaction(request))
       client_socket.send(message)
     else:
       client_socket.send(to_bytes("Idk what you're talking about!"))
@@ -140,15 +138,20 @@ def to_bytes(bytes_or_str):
   return value
 
 
-def database(command):
+def transaction(request):
   '''
   Calls the database and passes the desired command
   '''
-  result = subprocess.check_output(command)
+  result = Transaction_wrapper.run(request)
   return result
 
 
 def server_restarts(restarts=0):
+  '''
+  Attempts to reboot the server.
+  Will do so 10 times before shutting down
+  '''
+  print(restarts)
   restarts += 1
   print("[*] Server has restarted %d times" % restarts) 
   if restarts >= 10:
@@ -156,6 +159,13 @@ def server_restarts(restarts=0):
     print("[*][*] Exiting....[*][*]")
     sys.exit()
   return restarts
+
+def is_valid_request(request):
+  boo = False
+  request = to_str(request)
+  if (request == "get people"):
+    boo = True
+  return boo
 
 
 '''

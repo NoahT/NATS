@@ -70,7 +70,7 @@ def to_bytes(bytes_or_str):
 '''
 if __name__ == '__main__':
   client = setup()
-  send(client, to_bytes("Hello Server!"))
+  send(client, to_bytes("get people"))
   response = to_str(recieve(client))
   print(response)
 
