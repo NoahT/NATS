@@ -49,15 +49,15 @@ def handle_client(client_socket):
     client_socket.send(to_bytes("It does!"))
   elif (request == "Hello Server!"):
     command.append("HelloWorld.py")
-    print( "[*] Executing the following command: %s %s" % (command[0], command[1]))
+    print("[*] Executing the following command: %s %s" % (command[0], command[1]))
     # message = to_bytes(database(command))
     message = to_bytes("Lol wut")
     client_socket.send(message)
   else:
     client_socket.send(to_bytes("Idk what you're talking about!"))
-
   print("[*] Received: %s" % request)
   client_socket.close()
+  run(server)
 
 
 def run(server):
@@ -68,12 +68,12 @@ def run(server):
   '''
   while True:
     try:
+      print("[*] Waiting for connection....")
       client, addr = server.accept()
-      print( "[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
+      print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
       #spin up our client thread to handle incoming data
       client_handler = threading.Thread(target=handle_client,args=(client,))
       client_handler.start()
-      print( 1/0)
     except Exception as e:
       with open("/Users/taylorcochran/Documents/crash_log.txt", "ab") as file:
         file.write(to_bytes("\n============================\n"))
@@ -81,10 +81,8 @@ def run(server):
         file.write(to_bytes(str(e.args) + "\n"))
         file.write(to_bytes(str(e) + "\n"))
         file.write(to_bytes("============================"))
-      print( "[*] Exception %s logged." % str(type(e)))
-      print( "[*] Attemping to recover...")
-      break
-  run(server)
+      print("[*] Exception %s logged." % str(type(e)))
+      run(server)
 
 
 def database(command):
