@@ -1,7 +1,7 @@
 '''
 Author: Taylor Cochran
 Poject: NATS
-Version: 0.1
+Version: 0.2
 
 Algorythm:
   1) Grab the ip & desired port
@@ -22,6 +22,12 @@ import sys
 import threading 
 
 
+
+'''
+##########################
+####     SERVER       ####
+##########################
+'''
 def setup(ip=socket.gethostbyname(socket.gethostname()),
           port=10135):
   '''
@@ -35,6 +41,44 @@ def setup(ip=socket.gethostbyname(socket.gethostname()),
   return server
 
 
+def run(server):
+  '''
+  Opens the server. Accepts the server connection. 
+  Threads the client handler
+  Runs the thread.
+  '''
+  while True:
+    try:
+      print("[*] Waiting for connection....")
+      client, addr = server.accept()
+      print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
+      #spin up our client thread to handle incoming data
+      client_handler = threading.Thread(target=handle_client,args=(client,))
+      client_handler.start()
+    except Exception as e:
+      log(e)
+      run(server)
+
+
+def log(exception):
+  '''
+  Logs the passed exception to a file
+  '''
+  with open("/Users/taylorcochran/Documents/crash_log.txt", "ab+") as file:
+        file.write(to_bytes("\n============================\n"))
+        file.write(to_bytes(str(type(e)) + "\n"))
+        file.write(to_bytes(str(e.args) + "\n"))
+        file.write(to_bytes(str(e) + "\n"))
+        file.write(to_bytes("============================"))
+      print("[*] Exception %s logged." % str(type(e)))
+
+
+
+'''
+##########################
+####     CLIENT       ####
+##########################
+'''
 def handle_client(client_socket):
   '''
   Recives the client request, processes the passed data, and replies.
@@ -60,39 +104,12 @@ def handle_client(client_socket):
   run(server)
 
 
-def run(server):
-  '''
-  Opens the server. Accepts the server connection. 
-  Threads the client handler
-  Runs the thread.
-  '''
-  while True:
-    try:
-      print("[*] Waiting for connection....")
-      client, addr = server.accept()
-      print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
-      #spin up our client thread to handle incoming data
-      client_handler = threading.Thread(target=handle_client,args=(client,))
-      client_handler.start()
-    except Exception as e:
-      with open("/Users/taylorcochran/Documents/crash_log.txt", "ab") as file:
-        file.write(to_bytes("\n============================\n"))
-        file.write(to_bytes(str(type(e)) + "\n"))
-        file.write(to_bytes(str(e.args) + "\n"))
-        file.write(to_bytes(str(e) + "\n"))
-        file.write(to_bytes("============================"))
-      print("[*] Exception %s logged." % str(type(e)))
-      run(server)
 
-
-def database(command):
-  '''
-  Calls the database and passes the desired command
-  '''
-  result = subprocess.check_output(command)
-  return result
-
-
+'''
+##########################
+#### HELPER FUNCTIONS ####
+##########################
+'''
 def to_str(bytes_or_str):
   '''
   Accepts a 8-bit or string and returns a string
@@ -115,6 +132,20 @@ def to_bytes(bytes_or_str):
   return value
 
 
+def database(command):
+  '''
+  Calls the database and passes the desired command
+  '''
+  result = subprocess.check_output(command)
+  return result
+
+
+
+'''
+##########################
+####      MAIN        ####
+##########################
+'''
 if __name__ == '__main__':
   server = setup()
   server.listen(5)

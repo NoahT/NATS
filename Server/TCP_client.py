@@ -1,7 +1,7 @@
 '''
 Author: Taylor Cochran
 Poject: NATS
-Version: 0.1
+Version: 1.0
 
 Algorythm:
   1) select host and port
@@ -13,6 +13,11 @@ Algorythm:
 import socket
 
 
+'''
+##########################
+####     CLIENT       ####
+##########################
+'''
 def setup(host=socket.gethostbyname(socket.gethostname()),
           port=10135):
   '''Creates the client/socket object'''
@@ -32,6 +37,11 @@ def recieve(client):
   return response
 
 
+'''
+##########################
+#### HELPER FUNCTIONS ####
+##########################
+'''
 def to_str(bytes_or_str):
   '''
   Accepts a 8-bit or string and returns a string
@@ -53,7 +63,11 @@ def to_bytes(bytes_or_str):
     value = bytes_or_str
   return value
 
-
+'''
+##########################
+####      MAIN        ####
+##########################
+'''
 if __name__ == '__main__':
   client = setup()
   send(client, to_bytes("Hello Server!"))
