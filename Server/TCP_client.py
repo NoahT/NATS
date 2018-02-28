@@ -13,7 +13,7 @@ Algorythm:
 import socket
 
 def setup(host=socket.gethostbyname(socket.gethostname()),
-          port=3000):
+          port=10135):
   '''Creates the client/socket object'''
   client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   client.connect((host, port))
@@ -30,7 +30,7 @@ def recieve(client):
 
 
 if __name__ == '__main__':
-  client = setup("70.181.163.30", 10135)
+  client = setup()
   send(client, "Hello Server!")
   response = recieve(client)
   print response
