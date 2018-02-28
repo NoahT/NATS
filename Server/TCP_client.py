@@ -30,7 +30,8 @@ def recieve(client):
 
 
 if __name__ == '__main__':
-  client = setup()
-  send(client, "I hope this works")
+  client = setup("70.181.163.30", 10135)
+  send(client, "Hello Server!")
   response = recieve(client)
   print response
+
