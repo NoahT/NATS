@@ -80,6 +80,8 @@ def transaction(request):
       log(request, 1)
       file += "simpleDB.pl"
       command.append(file)
+      command.append("l")
+      print("[*][*] Running command: %s %s %s" % (command[0], command[1], command[2]))
       subprocess.run(command)
       # add to the perl script flags for grabbing stored data
     else:
