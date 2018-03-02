@@ -12,6 +12,12 @@ __email__ = "taylorjcochran@hotmail.com"
 __status__ = "Prototype"
 
 
+server = "ؿӬ٣ՄӬ٣"
+shadow = "ؿࢪര࠶۞ఋ"
+left_message = "༺༺༺༺༺"
+right_message = "༻༻༻༻༻"
+pillar = "༾༽༽༼༼༿"
+transaction_marker = "ཽ"
 
 class TCP_server:
   def __init__(self, ip, port):
@@ -21,6 +27,23 @@ class TCP_server:
                            socket.SO_REUSEADDR, 
                            1)
 
+  def run_server(self):
+    '''
+    Spins up the client thread to hangle incoming data.
+    In the event that a client connects calls handle_client
+    '''
+    self.server.bind((ip, port))
+    self.server.listen(5)
+    while True:
+      client, address = self.server.accept()
+      print("ཽ", end="")
+      print("\tཽ"*4)
+      print("༾༽༽༼༼༿    Connection     ༾༽༽༼༼༿")
+      print("༺༺༺༺༺  %s:%d ༻༻༻༻༻\n" % (address[0],
+                                                      address[1]))
+      client_handle = threading.Thread(target=self.handle_client,
+                                       args=(client,))
+      client_handle.start()
 
   def handle_client(self, client_socket):
     '''
@@ -33,17 +56,18 @@ class TCP_server:
     '''
     request = client_socket.recv(1024)
     request = self.to_str(request)
-    print("༺༺༺༺  Received ༻༻༻༻") 
-    print("༺༺  %s ༻༻" % request)
+    print("༺༺༺༺༺      Recieved      ༻༻༻༻༻") 
+    print(request)
 
     response = self.handle_request(request)
     response = self.to_str(response)
     
-    print("༺༺༺༺  Response ༻༻༻༻") 
-    print("༺༺  %s ༻༻\n" % response)
+    print("༺༺༺༺༺      Response      ༻༻༻༻༻") 
+    print(response)
+    print("ཽ", end="")
+    print("\tཽ"*4)
     response = self.to_bytes(response)
     client_socket.send(response)
-
     client_socket.close()
 
   def handle_request(self, request):
@@ -51,25 +75,9 @@ class TCP_server:
     Attempts to parse the recieved request.
     Right now this is simply a place holder
     '''
-    response = "Server: %s:%d\nHas recived your request\n" % (self.ip,
-                                                          self.port)
+    response = "ؿࢪര࠶۞ఋ  ؿӬ٣ՄӬ٣: %s:%d\n" % (self.ip,self.port)
+    response += "Has recieved your request\n"
     return response
-
-  def run_server(self):
-    '''
-    Spins up the client thread to hangle incoming data.
-    In the event that a client connects calls handle_client
-    '''
-    self.server.bind((ip, port))
-    self.server.listen(5)
-    while True:
-      client, address = self.server.accept()
-      print("༺༺༺༺༺༺  Accepted Connection ༻༻༻༻༻༻")
-      print("༺༺༺༺༺༺  %s:%d ༻༻༻༻༻༻\n" % (address[0],
-                                                      address[1]))
-      client_handle = threading.Thread(target=self.handle_client,
-                                       args=(client,))
-      client_handle.start()
 
   def to_bytes(self, str_or_byte):
     '''Encodes the passed str or bytes into utf-8'''
@@ -87,7 +95,8 @@ class TCP_server:
 if __name__ == '__main__':
   ip = socket.gethostbyname(socket.gethostname())
   port = 10135
-  print( "༺༺  Listening on %s:%d ༻༻" % (ip, port))
+  print( "༾༽༽༼༼༿  ؿࢪര࠶۞ఋ   ؿӬ٣ՄӬ٣  ༾༽༽༼༼༿")
+  print("༺༺༺༺༺  %s:%d ༻༻༻༻༻" % (ip, port))
   server = TCP_server(ip, port)
   server.run_server()
 
