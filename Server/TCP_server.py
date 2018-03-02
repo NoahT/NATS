@@ -33,11 +33,14 @@ class TCP_server:
     '''
     request = client_socket.recv(1024)
     request = self.to_str(request)
-    print("[*] Received: %s" % request)
+    print("༺༺༺༺  Received ༻༻༻༻") 
+    print("༺༺  %s ༻༻" % request)
 
     response = self.handle_request(request)
     response = self.to_str(response)
-    print("[*] Response: %s" % response)
+    
+    print("༺༺༺༺  Response ༻༻༻༻") 
+    print("༺༺  %s ༻༻\n" % response)
     response = self.to_bytes(response)
     client_socket.send(response)
 
@@ -48,7 +51,7 @@ class TCP_server:
     Attempts to parse the recieved request.
     Right now this is simply a place holder
     '''
-    response = "Server: %s:%d\nHas recived your request" % (self.ip,
+    response = "Server: %s:%d\nHas recived your request\n" % (self.ip,
                                                           self.port)
     return response
 
@@ -61,7 +64,8 @@ class TCP_server:
     self.server.listen(5)
     while True:
       client, address = self.server.accept()
-      print("[*][*] Accepted connection from %s:%d" % (address[0],
+      print("༺༺༺༺༺༺  Accepted Connection ༻༻༻༻༻༻")
+      print("༺༺༺༺༺༺  %s:%d ༻༻༻༻༻༻\n" % (address[0],
                                                       address[1]))
       client_handle = threading.Thread(target=self.handle_client,
                                        args=(client,))
@@ -83,7 +87,7 @@ class TCP_server:
 if __name__ == '__main__':
   ip = socket.gethostbyname(socket.gethostname())
   port = 10135
-  print( "[*][*] Listening on %s:%d [*][*]" % (ip, port))
+  print( "༺༺  Listening on %s:%d ༻༻" % (ip, port))
   server = TCP_server(ip, port)
   server.run_server()
 
