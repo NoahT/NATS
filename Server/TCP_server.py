@@ -19,6 +19,16 @@ class TCP_server:
     self.server.setsockopt(socket.SOL_SOCKET, 
                            socket.SO_REUSEADDR, 
                            1)
+    self.client_address = None
+
+    self.exception_log = "/Users/taylorcochran/Documents" 
+    self.exception_log += "/ServerLogs/Server/Exceptions.txt"
+    self.transaction_log = "/Users/taylorcochran/Documents" 
+    self.transaction_log += "/ServerLogs/Server/Transactions.txt"
+
+    self.log = Log.Log()
+    self.log.exception_file = self.exception_log
+    self.log.data_file = self.transaction_log
 
   def run_server(self):
     '''
@@ -28,35 +38,44 @@ class TCP_server:
     self.server.bind((ip, port))
     self.server.listen(5)
     while True:
-      client, address = self.server.accept()
+      client, self.client_address = self.server.accept()
+      
       print("ཽ", end="")
       print("\tཽ"*4)
-      print("༾༽༽༼༼༿    Connection     ༾༽༽༼༼༿")
-      print("༺༺༺༺༺  %s:%d ༻༻༻༻༻\n" % (address[0],
-                                                      address[1]))
-      client_handle = threading.Thread(target=self.handle_client,
-                                       args=(client,))
-      client_handle.start()
-
+      print("༾༽༽༼༼༿     Connection      ༾༽༽༼༼༿")
+      print("༺༺༺༺༺  %s:%d ༻༻༻༻༻\n" % (self.client_address[0],
+                                                    self.client_address[1]))
+      try:
+        client_handle = threading.Thread(target=self.handle_client,
+                                         args=(client,)) 
+        client_handle.start()
+      except RuntimeError as e:
+        self.log.log_exception(e)
+         
+        
   def handle_client(self, client_socket):
     '''
     Decids what to do with the connected client.
     1) Recieve the message
-    2) Attempt to parse it
-    3) Get the response
-    4) Send the Response
-    5) Close the connection
+    2) log it
+    3) Attempt to parse it
+    4) Get the response
+    5) Log the response
+    6) Send the Response
+    7) Close the connection
     '''
     request = client_socket.recv(1024)
     request = self.to_str(request)
-    print("༺༺༺༺༺      Recieved      ༻༻༻༻༻") 
-    print(request)
-
+    self.log.log_request(request, 
+                         self.client_address[0],
+                         self.client_address[1]
+                         )
     response = self.handle_request(request)
     response = self.to_str(response)
-    
-    print("༺༺༺༺༺      Response      ༻༻༻༻༻") 
-    print(response)
+    self.log.log_response(response, 
+                         self.client_address[0], 
+                         self.client_address[1]
+                         )
     print("ཽ", end="")
     print("\tཽ"*4)
 
@@ -89,7 +108,7 @@ class TCP_server:
 if __name__ == '__main__':
   ip = socket.gethostbyname(socket.gethostname())
   port = 10135
-  print( "༾༽༽༼༼༿       ؿӬ٣ՄӬ٣      ༾༽༽༼༼༿")
+  print( "༾༽༽༼༼༿       ؿӬ٣ՄӬ٣        ༾༽༽༼༼༿")
   print("༺༺༺༺༺  %s:%d ༻༻༻༻༻" % (ip, port))
   server = TCP_server(ip, port)
   server.run_server()
