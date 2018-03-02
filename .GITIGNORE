@@ -1,6 +1,6 @@
 # ignore the meta data
 .DS_Store
-__pychache__/
+/__pychache__/
 Simple.dbm.dir
 Simple.dbm.pag
 Cool_chars.py
