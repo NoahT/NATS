@@ -12,13 +12,6 @@ __email__ = "taylorjcochran@hotmail.com"
 __status__ = "Prototype"
 
 
-server = "ؿӬ٣ՄӬ٣"
-shadow = "ؿࢪര࠶۞ఋ"
-left_message = "༺༺༺༺༺"
-right_message = "༻༻༻༻༻"
-pillar = "༾༽༽༼༼༿"
-transaction_marker = "ཽ"
-
 class TCP_server:
   def __init__(self, ip, port):
     self.ip, self.port = ip, port
@@ -66,6 +59,7 @@ class TCP_server:
     print(response)
     print("ཽ", end="")
     print("\tཽ"*4)
+
     response = self.to_bytes(response)
     client_socket.send(response)
     client_socket.close()
@@ -75,7 +69,7 @@ class TCP_server:
     Attempts to parse the recieved request.
     Right now this is simply a place holder
     '''
-    response = "ؿࢪര࠶۞ఋ  ؿӬ٣ՄӬ٣: %s:%d\n" % (self.ip,self.port)
+    response = "ؿӬ٣ՄӬ٣: %s:%d\n" % (self.ip,self.port)
     response += "Has recieved your request\n"
     return response
 
@@ -95,12 +89,10 @@ class TCP_server:
 if __name__ == '__main__':
   ip = socket.gethostbyname(socket.gethostname())
   port = 10135
-  print( "༾༽༽༼༼༿  ؿࢪര࠶۞ఋ   ؿӬ٣ՄӬ٣  ༾༽༽༼༼༿")
+  print( "༾༽༽༼༼༿       ؿӬ٣ՄӬ٣      ༾༽༽༼༼༿")
   print("༺༺༺༺༺  %s:%d ༻༻༻༻༻" % (ip, port))
   server = TCP_server(ip, port)
   server.run_server()
-
-
 
 
 
