@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 ''' A simple Data/Crash Logger'''
 
-import datetime
+import Helper
 
 __author__ = "Taylor Cochran"
 __version__ = "1.0"
@@ -10,22 +10,22 @@ __email__ = "taylorjcochran@hotmail.com"
 __status__ = "Prototype"
 
 
-class Log:
+class Log(object):
   def __init__(self):
-    self.date = str(datetime.datetime.now())
     self.exception_file = None
     self.data_file = None
+    self.helper = Helper.Helper()
 
   def log_exception(self, data):
     '''
     Composes an exception message and writes it to a file
     '''
-    self.get_date()
+    date = self.Helper.get_date()
     start = "\n==========\n"
-    start += str(type(data)) + self.date
+    start += str(type(data)) + date
     start += "\n==========\n"
     message = start + str(data.args) + "\n" + str(data) + "\n"
-    message = self.to_bytes(message)
+    message = self.helper.to_bytes(message)
 
     try:
       with open(self.exception_file, 'ab+') as file:
@@ -44,13 +44,13 @@ class Log:
     print("༺༺༺༺༺    Logged Request    ༻༻༻༻༻") 
     print(data)
 
-    self.get_date()
+    date = self.helper.get_date()
     start = "\n==========\n"
-    start += "Request Received @ " + self.date
+    start += "Request Received @ " + date
     start += "\n==========\n"
     message = start + "IP: " + ip + "\nPort: " 
     message += str(port) + "\nRequest" + data
-    message = self.to_bytes(message)
+    message = self.helper.to_bytes(message)
 
     with open(self.data_file, 'ab+') as file:
       file.write(message)
@@ -62,32 +62,17 @@ class Log:
     print("༺༺༺༺༺    Logged Response   ༻༻༻༻༻") 
     print(data)
 
-    self.get_date()
+    date = self.helper.get_date()
     start = "\n==========\n"
-    start += "Response Sent @ " + self.date
+    start += "Response Sent @ " + date
     start += "\n==========\n"
     message = start + "IP: " + ip + "\nPort: " 
     message += str(port) + "\nReturn " + data
-    message = self.to_bytes(message)
+    message = self.helper.to_bytes(message)
 
     with open(self.data_file, 'ab+') as file:
       file.write(message)
 
-  def to_bytes(self, str_or_byte):
-    '''Encodes the passed str or bytes into utf-8'''
-    if isinstance(str_or_byte, str):
-      str_or_byte = str_or_byte.encode('utf-8')
-    return str_or_byte
-
-  def to_str(self, str_or_byte):
-    '''Decodes the passed str or bytes from utf-8'''
-    if isinstance(str_or_byte, bytes):
-      str_or_byte = str_or_byte.decode('utf-8')
-    return str_or_byte
-
-  def get_date(self):
-    ''' Grabs the current date/time stamp'''
-    self.date = str(datetime.datetime.now())
 
 if __name__ == '__main__':
   log = Log()
