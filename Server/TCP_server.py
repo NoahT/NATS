@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python3
 ''' A simple TCP server'''
 
 import Log
