@@ -36,6 +36,21 @@
     }
 }
 
+/*320-480*/
+@media all and (min-width: 20em) and (max-width: 30em) {
+
+  footer {
+    /*hide most of footer from user*/
+    position: fixed;
+    bottom: -8.66em;
+    transition: bottom 2s;
+  }
+  footer:hover {
+    /*on hover, open footer to user*/
+    bottom: 0%;
+  }
+}
+
 /*480*/
 @media all and (min-width: 30em) {
 }
