@@ -1,5 +1,11 @@
 #js library includes
 bootstrap-4.0.0-alpha.6-dist
-
-#this file is made only for my local repo
-.GITIGNORE
+.DS_Store
+__pychache__/
+Simple.dbm.dir
+Simple.dbm.pag
+Cool_chars.py 
+Log.cpython-36.pyc
+Test.db 
+Helper.cpython-36.pyc
+Transaction.cpython-36.pyc
