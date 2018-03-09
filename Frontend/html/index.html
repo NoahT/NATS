@@ -5,8 +5,9 @@
   <meta lang="en">
   <!--Scale page down to viewport size of current device.-->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/media-reset.css">
   <link rel="stylesheet" href="../css/media-all.css">
+  <link rel="stylesheet" href="../css/media-responsive.css">
 </head>
 <body>  
   <div class="color-border-parent color-red">
@@ -19,64 +20,61 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
+  <div>
+    <div>
+      <div>
         <h1 style="text-align: center;">Backend Log</h1>
       </div>
     </div>
-    <div class="row">
-      <div class="col-6">
-        <form>
-          <section>
-            <fieldset>
-              <legend>Query Selector</legend>
-              <label for="query_selector">Input search query:
-                <input type="text" id="query_selector" style="width: 100%">
-              </label>
-            </fieldset>
-          </section>
-          <section>
-            <fieldset>
-              <button type="submit">Search</button>
-            </fieldset>
-          </section>
-        </form>
-      </div>
+    <div id="query-form">
+      <form action="" method="get">
+        <section id="query-info">
+          <fieldset>
+            <legend>Query Selector</legend>
+            <label for="query_selector">Input search query:
+              <input type="text" name="input" value="testVal">
+            </label>
+          </fieldset>
+        </section>
+        <section id="query-submit">
+          <fieldset>
+            <button type="submit">Search</button>
+          </fieldset>
+        </section>
+      </form>
     </div>
-    <div class="row">
-      <div class="col-6" id="log-date">
-        <div class="row entry-date">
-          <div class="col-12">
+    <div id="log-root">
+      <div id="log-date">
+        <div class="entry-date">
+          <div>
             date-1
           </div>
         </div>
-        <div class="row entry-date">
-          <div class="col-12">
+        <div class="entry-date">
+          <div>
             date-2
           </div>
         </div>
-        <div class="row entry-date">
-          <div class="col-12">
+        <div class="entry-date">
+          <div>
             date-3
           </div>
         </div>
         <!-- TODO: AJAX calls to fill log-date for SQL data -->
-
       </div>
-      <div class="col-6" id="log-information">
-        <div class="row entry-info">
-          <div class="col-12">
+      <div id="log-information">
+        <div class="entry-info">
+          <div>
             entry-1
           </div>
         </div>
-        <div class="row entry-info">
-          <div class="col-12">
+        <div class="entry-info">
+          <div>
             entry-2
           </div>
         </div>
-        <div class="row entry-info">
-          <div class="col-12">
+        <div class="entry-info">
+          <div>
             entry-3
           </div>
         </div>
@@ -95,24 +93,24 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
+    <div>
+      <div>
+        <div>
           <h3>Get involved</h3>
         </div>
       </div>
-      <div class="row credentials">
-        <div class="col-4">
+      <div class="credentials">
+        <div>
           <a href="https://github.com/t-a-y-l-o-r/NATS" target="blank">
             <img src="../images/icons/github.svg" style="max-height: 50px; width: auto;">
           </a>
         </div>
-        <div class="col-4">
+        <div>
           <a href="https://github.com/t-a-y-l-o-r" target="blank">
             Taylor Cochran
           </a>
         </div>
-        <div class="col-4">
+        <div>
           <a href="https://github.com/NoahT" target="blank">
             Noah Teshima
           </a>
@@ -120,11 +118,7 @@
       </div>
     </div>
   </footer>
-  <!--
-    Since the CDN files for Bootstrap don't support asynchronous loading, the time to load the landing page may go up
-  -->
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+
 </body>
 </html>
