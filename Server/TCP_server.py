@@ -1,174 +1,69 @@
-'''
-Author: Taylor Cochran
-Poject: NATS
-Version: 0.2
+#!/usr/local/bin/python3
+''' A simple TCP server'''
 
-Algorythm:
-  1) Grab the ip & desired port
-  2) Create socket object
-  3) Bind ip/port
-  4) run the server
-  5) thread the server
-    1) recive the message from the client
-    2) do things with the recieved data
-    3) send a reply
-    4) Close the client socket
-  6) start the client_handler
-'''
-import os
+import Helper
+import Log
 import socket
-import subprocess
-import sys
-import threading 
+import threading
+import Transaction
+
+__author__ = "Taylor Cochran"
+__version__ = "1.0"
+__maintainer__ = "Taylor Cochran"
+__email__ = "taylorjcochran@hotmail.com"
+__status__ = "Prototype"
 
 
+class TCP_server(object):
+  def __init__(self, ip, port):
+    self.ip, self.port = ip, port
+    self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.server.setsockopt(socket.SOL_SOCKET, 
+                           socket.SO_REUSEADDR, 
+                           1)
+    self.helper = Helper.Helper()
+    self.wrapper = Transaction.Wrapper(self.ip, self.port)
+    self.client_address = None
 
-'''
-##########################
-####     SERVER       ####
-##########################
-'''
-def setup(ip=socket.gethostbyname(socket.gethostname()),
-          port=10135):
-  '''
-  Sets up the server on the localhost with the port.
-  Sets up the socket for a restart if the server crashes
-  '''
-  server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-  server.bind((ip, port))
-  print( "[*][*] Listening on %s:%d [*][*]" % (ip, port))
-  return server
-
-
-def run(server, restarts=0):
-  '''
-  Opens the server. Accepts the server connection. 
-  Threads the client handler
-  Runs the thread.
-  '''
-  while True:
-    try:
-      print("[*] Waiting for connection....", end='', flush=True)
-      client, addr = server.accept()
-      print("[*] Accepted connection from: %s:%d" % (addr[0], addr[1]))
-      #spin up our client thread to handle incoming data
-      client_handler = threading.Thread(target=handle_client,
-                                        args=(client, server_restarts))
-      client_handler.start()
-    except Exception as e:
-      log(e)
-      restarts = server_restarts(restarts)
-      run(server, restarts)
-
-
-def log(exception, 
-  location="ServerMain_CrashLog.txt"):
-  '''
-  Logs the passed exception to a file
-  '''
-  location = "/Users/taylorcochran/Desktop/Server Data/Logs/" + location
-  with open(location,
-            "ab+") as file:
-    file.write(to_bytes("\n============================\n"))
-    file.write(to_bytes(str(type(exception)) + "\n"))
-    file.write(to_bytes(str(exception.args) + "\n"))
-    file.write(to_bytes(str(exception) + "\n"))
-    file.write(to_bytes("============================"))
-  print("[*] Exception %s logged." % str(type(exception)))
-
-
-
-'''
-##########################
-####     CLIENT       ####
-##########################
-'''
-def handle_client(client_socket, restarts):
-  '''
-  Recives the client request, processes the passed data, and replies.
-  Finally it closes the client_socket
-  '''
-  try:
-    request = to_str(client_socket.recv(1024))
-    message = None
-    command = ["python2",]
-    # @@@@@@@ REPLACE WITH ACTUAL COMMANDS
-    if (request == "I hope this works!"):
-      client_socket.send(to_bytes("It does!"))
-    elif (request == "Hello Server!"):
-      command.append("HelloWorld.py")
-      print("[*] Executing the following command: %s %s" % (command[0], command[1]))
-      # message = to_bytes(database(command))
-      message = to_bytes("Lol wut")
-      client_socket.send(message)
-    else:
-      client_socket.send(to_bytes("Idk what you're talking about!"))
-    print("[*] Received: %s" % request)
+  def run_server(self):
+    '''Spins up the client thread to hangle incoming data.'''
+    self.server.bind((ip, port))
+    self.server.listen(5)
+    while True:
+      client, self.client_address = self.server.accept()
+      
+      print("ཽ", end="")
+      print("\tཽ"*4)
+      print("༾༽༽༼༼༿     Connection      ༾༽༽༼༼༿")
+      print("༺༺༺༺༺  %s:%d ༻༻༻༻༻\n" % (self.client_address[0],
+                                                    self.client_address[1]))
+      try:
+        client_handle = threading.Thread(target=self.handle_client,
+                                         args=(client,)) 
+        client_handle.start()
+      except RuntimeError as e:
+        self.log.log_exception(e)
+         
+        
+  def handle_client(self, client_socket):
+    '''Calls the transaction wrapper
+    Args:
+        client_socket: the client connection
+    '''
+    request = client_socket.recv(1024)
+    response = self.wrapper.process_request(request, self.client_address)
+    response = self.helper.to_bytes(response)
+    client_socket.send(response)
     client_socket.close()
-  except Exception as e:
-    log(e)
-    restarts = server_restarts(restarts)
-  run(server, server_restarts)
 
 
-
-'''
-##########################
-#### HELPER FUNCTIONS ####
-##########################
-'''
-def to_str(bytes_or_str):
-  '''
-  Accepts a 8-bit or string and returns a string
-  '''
-  if isinstance(bytes_or_str, bytes):
-    value = bytes_or_str.decode('utf-8')
-  else:
-    value = bytes_or_str
-  return value
-
-
-def to_bytes(bytes_or_str):
-  '''
-  Accepts a 8-bit or string and returns an 8-bit
-  '''
-  if isinstance(bytes_or_str, str):
-    value = bytes_or_str.encode('utf-8')
-  else:
-    value = bytes_or_str
-  return value
-
-
-def database(command):
-  '''
-  Calls the database and passes the desired command
-  '''
-  result = subprocess.check_output(command)
-  return result
-
-
-def server_restarts(restarts=0):
-  restarts += 1
-  print("[*] Server has restarted %d times" % restarts) 
-  if restarts >= 10:
-    print("[*][*] Server has reached restart limit! [*][*]")
-    print("[*][*] Exiting....[*][*]")
-    sys.exit()
-  return restarts
-
-
-'''
-##########################
-####      MAIN        ####
-##########################
-'''
 if __name__ == '__main__':
-  server = setup()
-  server.listen(5)
-  run(server)
-  
-
+  ip = socket.gethostbyname(socket.gethostname())
+  port = 10135
+  print( "༾༽༽༼༼༿       ؿӬ٣ՄӬ٣        ༾༽༽༼༼༿")
+  print("༺༺༺༺༺  %s:%d ༻༻༻༻༻" % (ip, port))
+  server = TCP_server(ip, port)
+  server.run_server()
 
 
 
