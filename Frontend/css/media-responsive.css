@@ -1,0 +1,51 @@
+/*320px*/
+@media all and (min-width: 20em) {
+  /*.query-form {
+    display: block;
+    width: 100%;
+    height: auto;
+    clear: both;
+  }*/
+
+  @media all and (orientation: landscape) {
+    footer {
+      position: initial;
+    }
+  }
+
+  #query-form {
+    overflow: auto;
+  }
+
+    #query-info,
+    #query-submit {
+      display: block;
+      float: left;
+      width: 50%;
+    }
+
+  #log-root {
+    clear: both;
+    display: block;
+    width: 100%;
+  }
+    #log-date, #log-information {
+      display: block;
+      float: left;
+      width: 50%;
+    }
+}
+
+/*480*/
+@media all and (min-width: 30em) {
+}
+
+/*720*/
+@media all and (min-width: 45em) {
+
+}
+
+/*1024*/
+@media all and (min-width: 64em) {
+
+}
